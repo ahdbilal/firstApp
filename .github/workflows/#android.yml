@@ -37,7 +37,7 @@ jobs:
         # Directory containing files to upload
         path: app/build/outputs/apk
     - name: App Center CLI command
-      uses: avocaddo/AppCenter-Github-Action@v1.0.2
+      uses: ahbilal/AppCenter-Github-Action
       with:
         command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA
         token: ${{secrets.APP_CENTER_TOKEN}}
