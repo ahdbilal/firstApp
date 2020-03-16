@@ -24,10 +24,8 @@ jobs:
     - name: check build
       run: |
         ls
-        cd app
+        cd app/build/outputs
         ls
-        cd build
-        ls
-        cd outputs
+        cd apk
         ls
         
