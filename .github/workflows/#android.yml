@@ -24,10 +24,10 @@ jobs:
     - name: check build
       run: |
         ls
+        cd app
+        ls
         cd build
         ls
-        cd ..
-        cd build.gradle
+        cd outputs
         ls
-        cd ..
         
