@@ -26,6 +26,6 @@ jobs:
         ls
         cd app/build/outputs
         ls
-        cd apk
+        cd apk/release
         ls
         
