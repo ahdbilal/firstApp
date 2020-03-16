@@ -27,6 +27,6 @@ jobs:
     - name: Comment PR
       uses: thollander/actions-comment-pull-request@master
       with:
-        message: "$link"
+        message: 'Install link : ${{ toJson(runner) }}'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
