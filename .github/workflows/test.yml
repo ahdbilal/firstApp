@@ -1,7 +1,7 @@
 name: Android CI
 
 on: 
-  push:
+  pull_request:
     branches: [master]
   #push:
   #  branches: [ master ]
@@ -18,5 +18,18 @@ jobs:
       uses: actions/setup-python@v1.2.0
     - run: |
         install_url=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['install_url'])")
-        echo "$install_url"
+        echo "::set-output name=link::$install_url"
+    - run: echo ${{link}}
+    - name: QR Code Commenter
+      uses: kentaro-m/qr-code-commenter-action@v0.1.2
+        with:
+        # The body for comment to post to a pull request comment. Must be contained {qrcode} placeholder and placed it to a new line.
+        comment:
+          :lock: This is a QR code for access to the preview website.
+          :iphone: Scan a code with your device.
+          {qrcode}
+        # The content to encode to QR code. Must be string.
+        content:  "${{ link }}"
+        # Token for the repository. Can be passed in using {{ secrets.GITHUB_TOKEN }}
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
     
