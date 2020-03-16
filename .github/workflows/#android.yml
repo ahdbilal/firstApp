@@ -21,11 +21,11 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-    - name: check build
-      run: |
-        ls
-        cd app/build/outputs
-        ls
-        cd apk/release
-        ls
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: build
+        # Directory containing files to upload
+        path: app/build/outputs/apk
         
