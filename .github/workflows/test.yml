@@ -22,9 +22,9 @@ jobs:
     - run: echo ${{link}}
     - name: QR Code Commenter
       uses: kentaro-m/qr-code-commenter-action@v0.1.2
-        with:
+      with:
         # The body for comment to post to a pull request comment. Must be contained {qrcode} placeholder and placed it to a new line.
-        comment:
+        comment: |
           :lock: This is a QR code for access to the preview website.
           :iphone: Scan a code with your device.
           {qrcode}
