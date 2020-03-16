@@ -22,19 +22,19 @@ jobs:
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
     - run: |
          pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-         echo "$pull_number"
+         echo "::set-env name=pull_number::$pull_number"
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: 3
+          issue-number: ${{ env.pull_number }}
           body: |
             This is a multi-line test comment
             - With GitHub **Markdown**
             - Created by [create-or-update-comment][1]
               
             Inline-style: 
-            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.appcenter.com "Logo Title Text 1")
+            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ env.link }} "Logo Title Text 1")
 
             [1]: https://github.com/peter-evans/create-or-update-comment
     #- uses: marocchino/sticky-pull-request-comment@v1
