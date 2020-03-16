@@ -28,5 +28,5 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         message: |
-          Release ${{ github.sha }} to $link
+          Release ${{ github.sha }} to ${env:link}
     
