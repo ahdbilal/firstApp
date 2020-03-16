@@ -22,4 +22,4 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: check build
-      run: cd ..
+      run: ls
