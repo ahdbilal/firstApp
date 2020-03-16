@@ -30,6 +30,7 @@ jobs:
         comment: |
           :lock: This is a QR code for access to the preview website.
           :iphone: Scan a code with your device.
+          :web: $link
           {qrcode}
         content:  $link
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
