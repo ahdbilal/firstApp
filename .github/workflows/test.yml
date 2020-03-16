@@ -23,7 +23,7 @@ jobs:
     - run: |
         echo "${{steps.deploy.outputs.link}}"
     - run: |
-        echo "${{link}}"
+        echo "${{steps.deploy.env.link}}"
     - name: QR Code Commenter
       uses: kentaro-m/qr-code-commenter-action@v0.1.2
       with:
