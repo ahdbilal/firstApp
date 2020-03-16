@@ -1,7 +1,7 @@
 name: Android CI
 
 on: 
-  push:
+  pull_request:
     branches: [master]
   #push:
   #  branches: [ master ]
@@ -21,7 +21,8 @@ jobs:
         id=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
     - run: |
-         echo "${{ env.link }}"
+         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+         echo "$pull_number"
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
@@ -33,7 +34,7 @@ jobs:
             - Created by [create-or-update-comment][1]
               
             Inline-style: 
-            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.appcenter.com =250x250 "Logo Title Text 1")
+            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.appcenter.com "Logo Title Text 1")
 
             [1]: https://github.com/peter-evans/create-or-update-comment
     #- uses: marocchino/sticky-pull-request-comment@v1
