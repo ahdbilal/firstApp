@@ -50,6 +50,8 @@ jobs:
           issue-number: ${{ env.pull_number }}
           body: |
             Scan the code with your device camera, or visit this [install page][1] on your device browser:
+            
             ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ env.link }})
+            
             [1]: ${{ env.link }}
     
