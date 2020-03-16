@@ -21,12 +21,12 @@ jobs:
         install_url=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['install_url'])")
         echo "::set-env name=link::$install_url"
     - run: |
-        echo "${{steps.deploy.outputs.link}}"
+        echo "${{steps.deploy.env.link}}"
     - run: |
         echo $link
     - name: Comment PR
       uses: thollander/actions-comment-pull-request@master
       with:
-        message: 'Install link : ${{ link }}'
+        message: 'Install link : "${{steps.deploy.env.link}}"'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
