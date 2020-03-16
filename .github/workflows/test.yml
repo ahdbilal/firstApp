@@ -33,10 +33,9 @@ jobs:
             - Created by [create-or-update-comment][1]
               
             Inline-style: 
-            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.appcenter.com "Logo Title Text 1")
+            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.appcenter.com =250x250 "Logo Title Text 1")
 
             [1]: https://github.com/peter-evans/create-or-update-comment
-          reaction-type: '+1'
     #- uses: marocchino/sticky-pull-request-comment@v1
     #  with:
     #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
