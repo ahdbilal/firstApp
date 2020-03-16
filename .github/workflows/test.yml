@@ -28,5 +28,5 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         message: |
-          Release ${{ github.sha }} to <https://pr-${{ github.event.number }}.example.com>
+          Release ${{ github.sha }} to $link
     
