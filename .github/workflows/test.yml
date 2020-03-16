@@ -27,6 +27,6 @@ jobs:
           :lock: This is a QR code for access to the preview website.
           :iphone: Scan a code with your device.
           {qrcode}
-        content:  "${{ appcenter_cli.link }}"
+        content:  "${{ outputs.link }}"
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
     
