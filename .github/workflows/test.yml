@@ -24,14 +24,9 @@ jobs:
         echo "${{steps.deploy.outputs.link}}"
     - run: |
         echo $link
-    - name: QR Code Commenter
-      uses: kentaro-m/qr-code-commenter-action@v0.1.2
+    - name: Comment PR
+      uses: thollander/actions-comment-pull-request@master
       with:
-        comment: |
-          :lock: This is a QR code for access to the preview website.
-          :iphone: Scan a code with your device.
-          :web: "$link"
-          {qrcode}
-        content:  "$link"
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        message: "$link"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
