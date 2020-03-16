@@ -20,23 +20,19 @@ jobs:
       run: |
         id=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
-    - run: |
-         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-         echo "::set-env name=pull_number::$pull_number"
+        pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        echo "::set-env name=pull_number::$pull_number"
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ env.pull_number }}
           body: |
-            This is a multi-line test comment
-            - With GitHub **Markdown**
-            - Created by [create-or-update-comment][1]
-              
-            Inline-style: 
-            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ env.link }} "Logo Title Text 1")
+            Scan the code with your device camera, or visit this [install page][1] on your device browser:
+            
+            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ env.link }})
 
-            [1]: https://github.com/peter-evans/create-or-update-comment
+            [1]: ${{ env.link }}
     #- uses: marocchino/sticky-pull-request-comment@v1
     #  with:
     #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
