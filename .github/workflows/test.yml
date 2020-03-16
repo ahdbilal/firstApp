@@ -23,13 +23,10 @@ jobs:
     - name: QR Code Commenter
       uses: kentaro-m/qr-code-commenter-action@v0.1.2
       with:
-        # The body for comment to post to a pull request comment. Must be contained {qrcode} placeholder and placed it to a new line.
         comment: |
           :lock: This is a QR code for access to the preview website.
           :iphone: Scan a code with your device.
           {qrcode}
-        # The content to encode to QR code. Must be string.
         content:  "${{ link }}"
-        # Token for the repository. Can be passed in using {{ secrets.GITHUB_TOKEN }}
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
     
