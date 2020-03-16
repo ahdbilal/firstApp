@@ -1,7 +1,7 @@
 name: Android CI
 
 on: 
-  pull_request:
+  push:
     branches: [master]
   #push:
   #  branches: [ master ]
@@ -22,9 +22,21 @@ jobs:
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
     - run: |
          echo "${{ env.link }}"
-    - uses: marocchino/sticky-pull-request-comment@v1
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v1
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        message: |
-          Release ${{ github.sha }} to ${{ env.link }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: 4
+          body: |
+            This is a multi-line test comment
+            - With GitHub **Markdown**
+            - Created by [create-or-update-comment][1]
+
+            [1]: https://github.com/peter-evans/create-or-update-comment
+          reaction-type: '+1'
+    #- uses: marocchino/sticky-pull-request-comment@v1
+    #  with:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    message: |
+    #      Release ${{ github.sha }} to ${{ env.link }}
     
