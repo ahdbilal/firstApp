@@ -36,4 +36,5 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
-        
+    - name: check
+      run: cd ${{SIGNED_RELEASE_FILE}}
