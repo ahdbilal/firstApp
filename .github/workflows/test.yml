@@ -19,9 +19,9 @@ jobs:
     - name: appcenter_cli
       run: |
         install_url=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['install_url'])")
-        echo "::set-output name=link::www.google.com"
+        echo "::set-env name=link::www.google.com"
     - run: |
-        echo "${{outputs.link}}"
+        echo "${{steps.deploy.outputs.link}}"
     - name: QR Code Commenter
       uses: kentaro-m/qr-code-commenter-action@v0.1.2
       with:
