@@ -14,6 +14,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
     - run: curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3"
     
