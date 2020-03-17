@@ -32,9 +32,10 @@ jobs:
       with:
         name: build
         path: app/build/outputs/apk
+    - uses: technote-space/get-git-comment-action@v1
     - name: Get commit message
       run: |
-            git log --no-merges -1 --oneline >> release_notes.txt
+            env.COMMIT_MESSAGE >> release_notes.txt
             cat release_notes.txt
     - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
