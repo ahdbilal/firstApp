@@ -34,9 +34,8 @@ jobs:
         path: app/build/outputs/apk
     - name: Get commit message
       run: |
-            echo "::set-env name=commitmsg::$(git log --no-merges -1 --oneline)"
-            echo $commitmsg >> release_notes.txt
-            ls
+            git log --no-merges -1 --oneline >> release_notes.txt
+            cat release_notes.txt
     - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
