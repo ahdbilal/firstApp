@@ -35,11 +35,11 @@ jobs:
     - name: Get commit message
       run: |
             echo "::set-env name=commitmsg::$(git log --no-merges -1 --oneline)"
-            echo ${{ env.commitmsg }}
+            echo "${{ env.commitmsg }}"
     - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -r ${{ env.commitmsg }}
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -r "${{ env.commitmsg }}"
         token: ${{secrets.APP_CENTER_TOKEN}}
     - name: Get release link
       run: |
