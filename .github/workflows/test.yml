@@ -34,11 +34,11 @@ jobs:
         path: app/build/outputs/apk
     - name: Get commit message
       run: |
-           echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+           echo ::set-env name=commitmsg::$(git log --no-merges -1 --oneline))
     - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -r ${{ env.commitmsg }}
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -r "${{ env.commitmsg }}"
         token: ${{secrets.APP_CENTER_TOKEN}}
     - name: Get release link
       run: |
