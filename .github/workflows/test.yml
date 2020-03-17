@@ -11,6 +11,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1.2.0
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -25,19 +27,20 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
-    - name: Upload artifact
+    - name: Upload build
       uses: actions/upload-artifact@v1.0.0
       with:
         name: build
         path: app/build/outputs/apk
-    - name: App Center CLI command
+    - name: Get commit message
+      run: |
+           echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+    - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -r ${{ env.commitmsg }}
         token: ${{secrets.APP_CENTER_TOKEN}}
-    - name: Setup Python
-      uses: actions/setup-python@v1.2.0
-    - name: appcenter_cli
+    - name: Get release link
       run: |
         id=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
