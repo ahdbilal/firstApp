@@ -35,7 +35,7 @@ jobs:
     - uses: technote-space/get-git-comment-action@v1
     - name: Get commit message
       run: |
-            ${{ env.COMMIT_MESSAGE }} >> release_notes.txt
+            echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
             cat release_notes.txt
     - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
