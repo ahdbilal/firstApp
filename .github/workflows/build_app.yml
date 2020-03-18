@@ -39,11 +39,13 @@ jobs:
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          add-labels: "built complete"
-          ignore-if-assigned: true
+          remove-labels: "building app"
+          ignore-if-assigned: false
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          remove-labels: "building app"
+          add-labels: "built complete"
+          ignore-if-assigned: true
+
       
