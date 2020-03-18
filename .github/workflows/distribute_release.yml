@@ -30,13 +30,11 @@ jobs:
       - name: Get commit message
         run: 
               zip -r build.zip build
-              echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
-              cat release_notes.txt
       - name: Distribute release
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: ahdbilal/AppCenter-Github-Action@v1.0.3
         with:
-          command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -R release_notes.txt -g privateA
+          command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -R build/release_notes.txt -g privateA
           token: ${{secrets.APP_CENTER_TOKEN}}
       - name: Get release link
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
