@@ -44,15 +44,34 @@ jobs:
         token: ${{secrets.APP_CENTER_TOKEN}}
     - name: Get release link
       run: |
-        id=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3" | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
+        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
+        id=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
+        app_name=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
+        version=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
+        echo "::set-env name=id::$id"
+        echo "::set-env name=app_name::$app_name"
+        echo "::set-env name=version::$version"
         echo "::set-env name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "::set-env name=pull_number::$pull_number"
+    - name: Create a Release
+      uses: actions/create-release@v1
+      with:
+        # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
+        tag_name: ${{ env.id }}
+        # The name of the release. For example, `Release v1.0.1`
+        release_name: ${{ env.app_name }} ${{ env.id }})
+        # Text describing the contents of the tag.
+        #body: # optional
+        # `true` to create a draft (unpublished) release, `false` to create a published one. Default: `false`
+        #draft: # optional
+        # `true` to identify the release as a prerelease. `false` to identify the release as a full release. Default: `false`
+        #prerelease: # optional
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ env.pull_number }}
+          issue-number: ${{ env.pull_number }} ${{ secrets.GITHUB_TOKEN }}
           body: |
             Scan the code with your device camera, or visit this [install page][1] on your device browser:
             
