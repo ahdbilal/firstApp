@@ -30,12 +30,14 @@ jobs:
           name: build
           path: app/build/outputs/apk
       - name: Sign Android release
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: r0adkll/sign-android-release@v1
         with:
           releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
@@ -43,6 +45,7 @@ jobs:
           add-labels: "built complete"
           ignore-if-assigned: true
       - uses: fixpoint/azblob-upload-artifact@v3
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
           connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
           name: build
