@@ -9,10 +9,14 @@ jobs:
         uses: machine-learning-apps/actions-chatops@master
         with:
           TRIGGER_PHRASE: "/build-app"
-          INDICATOR_LABEL: "building-app"
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
+      - uses: andymckay/labeler@1.0.2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          add-labels: "building app"
+          ignore-if-assigned: true
       - name: checkout
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
@@ -30,4 +34,14 @@ jobs:
         with:
           name: build
           path: app/build/outputs/apk
+      - uses: andymckay/labeler@1.0.2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          add-labels: "built complete"
+          ignore-if-assigned: true
+      - uses: andymckay/labeler@1.0.2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          remove-labels: "building app"
+          ignore-if-assigned: true
       
