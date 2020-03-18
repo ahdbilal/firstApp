@@ -8,7 +8,7 @@ jobs:
       - name: listen for PR Comments
         uses: machine-learning-apps/actions-chatops@master
         with:
-          TRIGGER_PHRASE: "/distribute_release"
+          TRIGGER_PHRASE: "/distribute-release"
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
