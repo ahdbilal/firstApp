@@ -15,30 +15,28 @@ jobs:
       - name: checkout
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        uses: actions/setup-java@v1
+      - name: Download a Build Artifact from Azure Blob Storage
+        uses: fixpoint/azblob-download-artifact@v3
         with:
-          java-version: 1.8
-      - name: build with Gradle
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        run: ./gradlew build
-      - name: Upload build
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        uses: actions/upload-artifact@v1.0.0
-        with:
+          connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}      
           name: build
           path: app/build/outputs/apk
+      - uses: technote-space/get-git-comment-action@v1
+      - name: Get commit message
+        run: |
+              #zip -r build.zip app/build/outputs/apk/release
+              echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
+              cat release_notes.txt
+      - name: Distribute release
+        uses: ahdbilal/AppCenter-Github-Action@v1.0.3
+        with:
+          command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
+          token: ${{secrets.APP_CENTER_TOKEN}}
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          add-labels: "built complete"
+          add-labels: "distribute complete"
           ignore-if-assigned: true
-      - uses: fixpoint/azblob-upload-artifact@v3
-        with:
-          connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          name: build
-          path: app/build/outputs/apk
 
       
