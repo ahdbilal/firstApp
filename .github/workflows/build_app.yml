@@ -1,4 +1,4 @@
-name: Demo
+name: build_app
 on: [issue_comment]
 
 jobs:
@@ -9,21 +9,25 @@ jobs:
         uses: machine-learning-apps/actions-chatops@master
         with:
           TRIGGER_PHRASE: "/build-app"
+          INDICATOR_LABEL: "building-app"
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
       - name: checkout
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
-      - name: Set up Python
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        uses: actions/setup-python@v1.2.0
       - name: set up JDK 1.8
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Gradle
+      - name: build with Gradle
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         run: ./gradlew build
+      - name: Upload build
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: build
+          path: app/build/outputs/apk
       
