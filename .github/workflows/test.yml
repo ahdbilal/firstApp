@@ -54,7 +54,7 @@ jobs:
         #echo "::set-outputs name=version::$version"
         echo "::set-outputs name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-        echo "::set-env outputs=pull_number::$pull_number"
+        echo "::set-outputs outputs=pull_number::$pull_number"
     - name: Create a Release
       uses: actions/create-release@v1
       with:
