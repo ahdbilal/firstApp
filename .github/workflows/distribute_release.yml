@@ -19,6 +19,7 @@ jobs:
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-python@v1.2.0
       - name: Download a Build Artifact from Azure Blob Storage
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: fixpoint/azblob-download-artifact@v3
         with:
           connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}      
@@ -38,6 +39,7 @@ jobs:
           command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -R release_notes.txt -g privateA
           token: ${{secrets.APP_CENTER_TOKEN}}
       - name: Get release link
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         id: release
         run: |
           temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
@@ -51,6 +53,7 @@ jobs:
           pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
           echo "::set-output name=pull_number::$pull_number"
       - name: Create a Release
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -62,6 +65,7 @@ jobs:
           #draft: # optional
           #prerelease: # optional
       - name: Upload Release Asset
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
