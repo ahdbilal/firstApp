@@ -49,7 +49,7 @@ jobs:
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
         version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
-        echo "::set-env name=id::$id"
+        echo "::set-outputs name=id::$id"
         echo "::set-outputs name=app_name::$app_name"
         #echo "::set-outputs name=version::$version"
         echo "::set-outputs name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
