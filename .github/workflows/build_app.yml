@@ -38,6 +38,14 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - uses: technote-space/get-git-comment-action@v1
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      - name: Get commit message
+        run: 
+            echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
+            cat release_notes.txt
+            mv release_notes.txt app/build/outputs/apk
+            zip -r build.zip app/build/outputs/apk
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
@@ -49,6 +57,6 @@ jobs:
         with:
           connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
           name: build
-          path: app/build/outputs/apk
+          path: build.zip
 
       
