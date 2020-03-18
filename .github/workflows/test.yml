@@ -51,7 +51,7 @@ jobs:
         version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
         echo "::set-output name=id::$id"
         echo "::set-output name=app_name::$app_name"
-        #echo "::set-output name=version::$version"
+        echo "::set-output name=version::$version"
         echo "::set-output name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "::set-output name=pull_number::$pull_number"
@@ -59,9 +59,9 @@ jobs:
       uses: actions/create-release@v1
       with:
         # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
-        tag_name: ${{ steps.release.outputs.id }}
+        tag_name: ${{ steps.release.outputs.version }}
         # The name of the release. For example, `Release v1.0.1`
-        release_name: ${{ steps.release.outputs.app_name }} ${{ steps.release.outputs.id }})
+        release_name: ${{ steps.release.outputs.app_name }} ${{ steps.release.outputs.version }})
         # Text describing the contents of the tag.
         #body: # optional
         # `true` to create a draft (unpublished) release, `false` to create a published one. Default: `false`
