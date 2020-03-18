@@ -45,9 +45,9 @@ jobs:
     - name: Get release link
       run: |
         temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
-        id=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
-        app_name=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
-        version=$($temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
+        id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
+        app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
+        version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
         echo "::set-env name=id::$id"
         echo "::set-env name=app_name::$app_name"
         echo "::set-env name=version::$version"
