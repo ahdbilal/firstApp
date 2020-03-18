@@ -49,12 +49,12 @@ jobs:
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
         version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
-        echo "::set-outputs name=id::$id"
-        echo "::set-outputs name=app_name::$app_name"
-        #echo "::set-outputs name=version::$version"
-        echo "::set-outputs name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
+        echo "::set-output name=id::$id"
+        echo "::set-output name=app_name::$app_name"
+        #echo "::set-output name=version::$version"
+        echo "::set-output name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-        echo "::set-outputs outputs=pull_number::$pull_number"
+        echo "::set-output outputs=pull_number::$pull_number"
     - name: Create a Release
       uses: actions/create-release@v1
       with:
