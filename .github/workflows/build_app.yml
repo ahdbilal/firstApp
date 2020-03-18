@@ -1,5 +1,7 @@
 name: build_app
-on: [issue_comment]
+on: 
+  pull_request:
+    branches: [master]
 
 jobs:
   label-pr:
@@ -38,6 +40,12 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - uses: technote-space/get-git-comment-action@v1
+      - name: Get commit message
+        run: |
+              echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
+              cat release_notes.txt
+              mv release_notes.txt app/build/outputs/apk/
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
