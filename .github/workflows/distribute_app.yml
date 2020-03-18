@@ -20,7 +20,7 @@ jobs:
         with:
           connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}      
           name: build
-          path: app/build/outputs/apk
+          path: build
       - uses: technote-space/get-git-comment-action@v1
       - name: Get commit message
         run: |
@@ -30,7 +30,7 @@ jobs:
       - name: Distribute release
         uses: ahdbilal/AppCenter-Github-Action@v1.0.3
         with:
-          command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
+          command: appcenter distribute release -f build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
           token: ${{secrets.APP_CENTER_TOKEN}}
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
