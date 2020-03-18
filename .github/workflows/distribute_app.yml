@@ -22,12 +22,14 @@ jobs:
           name: build
           path: build
       - uses: technote-space/get-git-comment-action@v1
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
       - name: Get commit message
         run: |
               #zip -r build.zip app/build/outputs/apk/release
               echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
               cat release_notes.txt
       - name: Distribute release
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: ahdbilal/AppCenter-Github-Action@v1.0.3
         with:
           command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
