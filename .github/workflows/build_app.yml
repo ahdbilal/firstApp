@@ -35,5 +35,10 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           add-labels: "built complete"
           ignore-if-assigned: true
+      - uses: fixpoint/azblob-upload-artifact@v3
+        with:
+          connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          name: build
+          path: app/build/outputs/apk
 
       
