@@ -12,12 +12,6 @@ jobs:
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
-      - uses: andymckay/labeler@1.0.2
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          add-labels: "building app"
-          ignore-if-assigned: true
       - name: checkout
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
@@ -35,12 +29,6 @@ jobs:
         with:
           name: build
           path: app/build/outputs/apk
-      - uses: andymckay/labeler@1.0.2
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          remove-labels: "building app"
-          ignore-if-assigned: false
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         with:
