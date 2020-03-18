@@ -12,13 +12,18 @@ jobs:
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
-      - uses: actions/checkout@v2
+      - name: checkout
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2
       - name: Set up Python
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-python@v1.2.0
       - name: set up JDK 1.8
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
       - name: Build with Gradle
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         run: ./gradlew build
       
