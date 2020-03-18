@@ -8,7 +8,7 @@ jobs:
       - name: listen for PR Comments
         uses: machine-learning-apps/actions-chatops@master
         with:
-          TRIGGER_PHRASE: "/create-release"
+          TRIGGER_PHRASE: "/distribute_release"
         env: # you must supply GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
@@ -35,12 +35,12 @@ jobs:
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: ahdbilal/AppCenter-Github-Action@v1.0.3
         with:
-          command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -R release_notes.txt
+          command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -R release_notes.txt -g privateA
           token: ${{secrets.APP_CENTER_TOKEN}}
       - name: Get release link
         id: release
         run: |
-          temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -g privateA -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
+          temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
           id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
           app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
           version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
