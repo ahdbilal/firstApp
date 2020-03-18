@@ -1,0 +1,44 @@
+name: distribute_app
+on: [issue_comment]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: listen for PR Comments
+        uses: machine-learning-apps/actions-chatops@master
+        with:
+          TRIGGER_PHRASE: "/distribute-app"
+        env: # you must supply GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: prcomm
+      - name: checkout
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: build with Gradle
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        run: ./gradlew build
+      - name: Upload build
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: build
+          path: app/build/outputs/apk
+      - uses: andymckay/labeler@1.0.2
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          add-labels: "built complete"
+          ignore-if-assigned: true
+      - uses: fixpoint/azblob-upload-artifact@v3
+        with:
+          connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          name: build
+          path: app/build/outputs/apk
+
+      
