@@ -30,7 +30,7 @@ jobs:
       - name: Distribute release
         uses: ahdbilal/AppCenter-Github-Action@v1.0.3
         with:
-          command: appcenter distribute release -f build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
+          command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
           token: ${{secrets.APP_CENTER_TOKEN}}
       - uses: andymckay/labeler@1.0.2
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
