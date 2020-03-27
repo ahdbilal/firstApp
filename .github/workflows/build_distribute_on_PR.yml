@@ -95,9 +95,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ steps.release.outputs.pull_number }} ${{ secrets.GITHUB_TOKEN }}
           body: |
-            Scan the code with your device camera, or visit this [install page][1] on your device browser:
+            Scan the code with your device camera, or visit this [install page] [1] on your device browser:
             
             ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ steps.release.outputs.link }})
             
-            [1]: ${{ env.link }}
+            [1]: "${{ env.link }}"
     
