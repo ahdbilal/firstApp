@@ -13,18 +13,18 @@ jobs:
     
     - uses: actions/checkout@v2
     
-    - name: set up Python
+    - name: Set up Python
       uses: actions/setup-python@v1.2.0
     
-    - name: set up JDK 1.8
+    - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
     
-    - name: build with Gradle
+    - name: build with gradle
       run: ./gradlew build
     
-    - name: sign Android release
+    - name: Sign android release
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: app/build/outputs/apk/release
@@ -33,7 +33,7 @@ jobs:
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
     
-    - name: upload build
+    - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: build
@@ -46,13 +46,13 @@ jobs:
             zip -r build.zip app/build/outputs/apk/release
             echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
     
-    - name: distribute release
+    - name: Distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
         command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
         token: ${{secrets.APP_CENTER_TOKEN}}
     
-    - name: get release link
+    - name: Get release link
       id: release
       run: |
         temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
@@ -66,17 +66,19 @@ jobs:
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "::set-output name=pull_number::$pull_number"
     
-    - name: create a release
+    - name: Create a release
       id: create_release
       uses: actions/create-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.release.outputs.version }}
-        release_name: ${{ steps.release.outputs.app_name }} v${{ steps.release.outputs.version }}
-        body: ${{ env.COMMIT_MESSAGE }}
+          tag_name: ${{ steps.release.outputs.id }}
+          release_name: ${{ steps.release.outputs.app_name }} v${{ steps.release.outputs.version }}
+          body: ${{ env.COMMIT_MESSAGE }}
+          #draft: # optional
+          #prerelease: # optional
     
-    - name: upload release asset
+    - name: Upload release asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1
       env:
@@ -87,7 +89,7 @@ jobs:
         asset_name: build.zip
         asset_content_type: application/zip
     
-    - name: create comment
+    - name: Create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
