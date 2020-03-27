@@ -2,7 +2,7 @@ name: Android CI
 
 on: 
   pull_request:
-    branches: [qwe]
+    branches: [master]
 
 jobs:
   build:
@@ -10,16 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    
     - uses: actions/checkout@v2
-    - name: Set up Python
+    
+    - name: set up Python
       uses: actions/setup-python@v1.2.0
+    
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build with Gradle
+    
+    - name: build with Gradle
       run: ./gradlew build
-    - name: Sign Android release
+    
+    - name: sign Android release
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: app/build/outputs/apk/release
@@ -27,23 +32,27 @@ jobs:
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
-    - name: Upload build
+    
+    - name: upload build
       uses: actions/upload-artifact@v1.0.0
       with:
         name: build
         path: app/build/outputs/apk
+    
     - uses: technote-space/get-git-comment-action@v1
-    - name: Get commit message
+    
+    - name: helper function
       run: |
             zip -r build.zip app/build/outputs/apk/release
             echo "${{ env.COMMIT_MESSAGE }}" > release_notes.txt
-            cat release_notes.txt
-    - name: Distribute release
+    
+    - name: distribute release
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
         command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA -R release_notes.txt
         token: ${{secrets.APP_CENTER_TOKEN}}
-    - name: Get release link
+    
+    - name: get release link
       id: release
       run: |
         temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
@@ -56,33 +65,29 @@ jobs:
         echo "::set-output name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "::set-output name=pull_number::$pull_number"
-    - name: Create a Release
+    
+    - name: create a release
       id: create_release
       uses: actions/create-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
         tag_name: ${{ steps.release.outputs.version }}
-        # The name of the release. For example, `Release v1.0.1`
         release_name: ${{ steps.release.outputs.app_name }} v${{ steps.release.outputs.version }}
-        # Text describing the contents of the tag.
         body: ${{ env.COMMIT_MESSAGE }}
-        # `true` to create a draft (unpublished) release, `false` to create a published one. Default: `false`
-        #draft: # optional
-        # `true` to identify the release as a prerelease. `false` to identify the release as a full release. Default: `false`
-        #prerelease: # optional
-    - name: Upload Release Asset
+    
+    - name: upload release asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build.zip
         asset_name: build.zip
         asset_content_type: application/zip
-    - name: Create comment
+    
+    - name: create comment
       uses: peter-evans/create-or-update-comment@v1
       with:
           token: ${{ secrets.GITHUB_TOKEN }}
