@@ -17,7 +17,7 @@ def main():
         cfg[0]['notify_testers']
     else:
         group=""
-    os.sys(echo "::set-output name=id::qwe")
+    os.system(" echo \"::set-output name=id::qwe\"" )
     return print(group[0])
   
 if __name__== "__main__":
