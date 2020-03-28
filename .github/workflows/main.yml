@@ -33,7 +33,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v1.2.0
     - run: |
-        pip install yaml
+        pip install PyYAML
         echo $GITHUB_REF
         group=$(echo "master" | python3 .github/workflows/lib/read_config.py)
         echo $group
