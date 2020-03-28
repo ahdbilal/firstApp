@@ -35,7 +35,8 @@ jobs:
     - run: |
         pip install PyYAML
         echo $GITHUB_REF
-        group=$(echo "master" | python3 .github/workflows/lib/read_config.py)
+        ls
+        group=$(echo "master" | python3 lib/read_config.py)
         echo $group
         
     
