@@ -31,6 +31,5 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: |
             <br />
-            **App Center:**
             ${{ steps.cli.outputs.comment }}
             
