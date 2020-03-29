@@ -5,7 +5,7 @@ def main():
 
     current_branch=(sys.stdin.readlines())[0]
 
-    with open("/Users/ahmedbilal/Desktop/GH-AC-Demo/dist_config.yml", 'r') as ymlfile:
+    with open(".distribute/config.yml", 'r') as ymlfile:
         cfg = yaml.safe_load(ymlfile)
 
     for i in range(0,len(cfg)):
