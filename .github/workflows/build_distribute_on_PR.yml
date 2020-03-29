@@ -61,14 +61,16 @@ jobs:
     - name: Get Release Details
       id: release-details
       run: |
-        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/ahbilal-microsoft.com/firstApp/distribution_groups/privateA/releases/latest" -H "accept: application/json" -H "X-API-Token: 48795f81b653dcbad31bbb403f21b49d538badb3")
+        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "${{secrets.APP_CENTER_TOKEN}}")
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
         version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
         echo "::set-output name=id::$id"
         echo "::set-output name=app_name::$app_name"
         echo "::set-output name=version::$version"
-        echo "::set-output name=link::https://install.appcenter.ms/users/ahbilal-microsoft.com/apps/firstApp/releases/$id"
+        org=$(echo ${{ secrets.APP_NAME }} | python -c 'import sys;print(sys.stdin.read().splitlines()[0].split("/")[0])')
+        app=$(echo ${{ secrets.APP_NAME }} | python -c 'import sys;print(sys.stdin.read().splitlines()[0].split("/")[1])')
+        echo "::set-output name=link::https://install.appcenter.ms/users/$org/apps/$app/releases/$id"
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "::set-output name=pull_number::$pull_number"
     
