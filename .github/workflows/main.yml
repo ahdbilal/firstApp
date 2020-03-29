@@ -34,13 +34,14 @@ jobs:
       uses: actions/setup-python@v1.2.0
     - run: |
         pip install PyYAML
-        destinations=$(echo  $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
-        echo "::set-output name=destinations::$destinations"
+        destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
+        echo "::set-output name=group::$destinations"
+        echo $group
     
     - name: Run a one-line script
       run: |
-        echo ${{ steps.python.outputs.destinations }}
-        echo "${{ steps.python.outputs.destinations }}"
+        echo ${{ steps.python.outputs.group }}
+        echo "${{ steps.python.outputs.group }}"
         
         
         
