@@ -11,18 +11,18 @@ jobs:
 
     steps:
     
-    - name: checkout repo
+    - name: Checkout repo
       uses: actions/checkout@v2
     
-    - name: set up JDK 1.8
+    - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
     
-    - name: build with Gradle
+    - name: Build with Gradle
       run: ./gradlew build
     
-    - name: sign Android release
+    - name: Sign Android release
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: app/build/outputs/apk/release
@@ -31,7 +31,7 @@ jobs:
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
     
-    - name: upload artifact
+    - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: build
@@ -40,16 +40,15 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v1.2.0
     
-    - name: read_dist_config
+    - name: Read dist config
       id: dist_config
       run: |
         pip install PyYAML
         echo $GITHUB_REF
         destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
         echo "::set-output name=destinations::"${destinations//\'}""
-        echo $destinations
     
-    - name: app center distribute
+    - name: Distribute to App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
         command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g ${{ steps.dist_config.outputs.destinations }}
