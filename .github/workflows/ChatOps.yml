@@ -21,9 +21,7 @@ jobs:
         id: cli
         run: |
           npm install appcenter-cli
-          npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }} --output json >> comment.txt
-          comment=$(cat comment.txt)
-          echo $comment
+          comment=$(npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }} --output json)
           echo "::set-output name=comment::$comment"
         
       - name: Create or Update Comment
@@ -33,5 +31,8 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: |
             <br />
-            App Center:
+            **App Center:**
+            ```json
             ${{ steps.cli.outputs.comment }}
+            ```
+            
