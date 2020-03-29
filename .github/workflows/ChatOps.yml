@@ -24,6 +24,19 @@ jobs:
           comment=$(npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }})
           echo $comment
           echo "::set-output name=comment::$comment"
+          
+      - run: |
+          echo ${{ steps.cli.outputs.comment }}
+          
+      - name: Comment Action
+        uses: JungWinter/comment@v1
+        with:
+          # create|edit
+          type: create
+          # comment body
+          body: "${{ steps.cli.outputs.comment }}"
+          # github token
+          token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.1.0
