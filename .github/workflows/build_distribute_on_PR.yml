@@ -85,9 +85,9 @@ jobs:
       id: create-release
       uses: actions/create-release@v1
       env:
-          GITHUB_TOKEN: v${{ steps.release-details.outputs.version }}.${{ steps.dist_config.outputs.release_type }}-${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name: ${{ steps.release-details.outputs.id }}
+          tag_name: v${{ steps.release-details.outputs.version }}.${{ steps.dist_config.outputs.release_type }}-${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.release-details.outputs.app_name }} v${{ steps.release-details.outputs.version }}
           body: ${{ env.COMMIT_MESSAGE }}
           draft: ${{ steps.dist_config.outputs.draft }}
