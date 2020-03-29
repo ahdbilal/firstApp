@@ -1,5 +1,5 @@
 name: distribute_app
-on: [issue_comment]
+on: [qwe]
 
 jobs:
   label-pr:
