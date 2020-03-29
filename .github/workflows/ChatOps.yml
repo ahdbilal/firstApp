@@ -16,10 +16,10 @@ jobs:
       - name: Checking Out
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
-        
-      - name: Distribute to App Center
-        uses: ahdbilal/AppCenter-Github-Action@v1.0.3
-        with:
-          command: appcenter distribute ${{ steps.prcomm.outputs.TRAILING_LINE }}
-          token: ${{secrets.APP_CENTER_TOKEN}}
+          
+      - name: Deploy to App Center
+        run: |
+          npm install appcenter-cli@2.3.3
+          npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}"
+
         
