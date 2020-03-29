@@ -90,8 +90,8 @@ jobs:
           tag_name: v${{ steps.release-details.outputs.version }}.${{ steps.dist_config.outputs.release_type }}-${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.release-details.outputs.app_name }} v${{ steps.release-details.outputs.version }}
           body: ${{ env.COMMIT_MESSAGE }}
-          draft: ${{ steps.dist_config.outputs.draft }}
-          prerelease: ${{ steps.dist_config.outputs.prerelease }}
+          draft: true
+          prerelease: true
     
     - name: Zip Build
       run: zip -r build.zip build
