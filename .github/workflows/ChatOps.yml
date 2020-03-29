@@ -17,9 +17,16 @@ jobs:
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v2
           
-      - name: Deploy to App Center
+      - name: App Center
+        id: cli
         run: |
           npm install appcenter-cli@2.3.3
-          npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }}
-
+          comment=$(npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }})
+          echo "::set-output name=comment::$comment"
         
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v1.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ github.event.comment.id }}
+          body: ${{ steps.cli.outputs.comment }}
