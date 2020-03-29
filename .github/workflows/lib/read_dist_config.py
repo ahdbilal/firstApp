@@ -14,12 +14,18 @@ def main():
             destinations=cfg[i]['destinations'].split(",")
             mandatory_update=cfg[i]['mandatory_update']
             notify_testers=cfg[i]['notify_testers']
+            release_type=cfg[i]['type'].split(",")
+            prerelease=cfg[i]['prerelease']
+            draft=cfg[i]['draft']
             break
         else:
             build=""
             destinations=""
             mandatory_update=""
             notify_testers=""
+            release_type=""
+            prerelease=""
+            draft=""
     
     if param=="build":
         return print(build)
@@ -29,6 +35,12 @@ def main():
         return print(mandatory_update)
     elif param=="notify_testers":
         return print(notify_testers)
+    elif param=="release_type":
+        return print(release_type)
+    elif param=="prerelease":
+        return print(prerelease)
+    elif param=="draft":
+        return print(draft)
     else:
         return print(-1)
   
