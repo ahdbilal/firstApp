@@ -10,3 +10,10 @@
   destinations: public
   mandatory_update: False
   notify_testers: True
+- branch: pull
+  build: 125
+  release_nottes:
+  destinations: public
+  mandatory_update: False
+  notify_testers: True
+
