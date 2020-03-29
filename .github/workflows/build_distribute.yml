@@ -36,9 +36,17 @@ jobs:
       with:
         name: build
         path: app/build/outputs/apk
+        
+    - name: dist_config
+      id: dist_config
+      uses: actions/setup-python@v1.2.0
+    - run: |
+        pip install PyYAML
+        destinations=$(echo  $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
+        echo "::set-output name=destinations::$destinations"
     
     - name: app center distribute
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g privateA
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g ${{ steps.dist_config.outputs.destinations }}
         token: ${{secrets.APP_CENTER_TOKEN}}
