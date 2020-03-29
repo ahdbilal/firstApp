@@ -61,7 +61,7 @@ jobs:
     - name: Get Release Details
       id: release-details
       run: |
-        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "${{secrets.APP_CENTER_TOKEN}}")
+        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/public/releases/latest" -H "accept: application/json" -H "${{secrets.APP_CENTER_TOKEN}}")
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
         version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
