@@ -51,9 +51,9 @@ jobs:
         draft=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "draft")
         echo "::set-output name=destinations::"${destinations//\'}""
         echo "::set-output name=notify_testers::"${notify_testers//\'}""
-        echo "::set-output name=destinations::"${prerelease//\'}""
-        echo "::set-output name=notify_testers::"${release_type//\'}""
-        echo "::set-output name=notify_testers::"${draft//\'}""
+        echo "::set-output name=prerelease::"${prerelease//\'}""
+        echo "::set-output name=release_type::"${release_type//\'}""
+        echo "::set-output name=draft::"${draft//\'}""
         echo $prerelease
         echo $release_type
         echo $draft
