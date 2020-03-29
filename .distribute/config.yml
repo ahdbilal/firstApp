@@ -4,16 +4,25 @@
   destinations: privateA
   mandatory_update: False
   notify_testers: True
+  type: alpha
+  prerelease: True
+  draft: true
 - branch: feature
   build: 125
   release_nottes:
   destinations: public
   mandatory_update: False
   notify_testers: True
+  type: alpha
+  prerelease: True
+  draft: true
 - branch: pull
   build: 125
   release_nottes:
   destinations: public
   mandatory_update: False
   notify_testers: True
+  type: alpha
+  prerelease: True
+  draft: true
 
