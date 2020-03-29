@@ -32,6 +32,9 @@ jobs:
         uses: peter-evans/create-or-update-comment@v1.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.issue.id }}
+          comment-id: ${{ github.event.comment.id }}
           body: |
+            
+            
+            App Center:
             ${{ steps.cli.outputs.comment }}
