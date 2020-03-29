@@ -2,7 +2,7 @@ name: Android CI
 
 on: 
   push:
-    branches: [qwe]
+    branches: [master]
 
 jobs:
   build:
@@ -37,13 +37,17 @@ jobs:
         name: build
         path: app/build/outputs/apk
         
-    - name: dist_config
-      id: dist_config
+    - name: Setup Python
       uses: actions/setup-python@v1.2.0
-    - run: |
+    
+    - name: read_dist_config
+      id: dist_config
+      run: |
         pip install PyYAML
-        destinations=$(echo  $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
+        echo $GITHUB_REF
+        destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
         echo "::set-output name=destinations::$destinations"
+        echo $destinations
     
     - name: app center distribute
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
