@@ -48,9 +48,6 @@ jobs:
         notify_testers=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "notify_testers")
         echo "::set-output name=destinations::"${destinations//\'}""
         echo "::set-output name=notify_testers::"${notify_testers//\'}""
-        echo $destinations
-        echo $notify_testers
-        echo $GITHUB_REF
     
     - name: Distribute with App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
@@ -62,7 +59,7 @@ jobs:
       id: release-details
       run: |
         echo ${{ steps.dist_config.outputs.destinations }}
-        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "X-API-Token: ${{secrets.APP_CENTER_TOKEN}}")
+        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "X-API-Token: ${{secrets.APP_CENTER_TOKEN}}")
         echo $temp
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
         app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
