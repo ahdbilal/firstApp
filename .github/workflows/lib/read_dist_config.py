@@ -14,7 +14,7 @@ def main():
             destinations=cfg[i]['destinations'].split(",")
             mandatory_update=cfg[i]['mandatory_update']
             notify_testers=cfg[i]['notify_testers']
-            release_type=cfg[i]['type'].split(",")
+            release_type=cfg[i]['type']
             prerelease=cfg[i]['prerelease']
             draft=cfg[i]['draft']
             break
