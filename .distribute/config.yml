@@ -11,7 +11,7 @@
   build: 125
   release_nottes:
   destinations: public
-  mandatory_update: False
+  mandatory_update: false
   notify_testers: True
   type: alpha
   prerelease: true
