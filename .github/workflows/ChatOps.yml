@@ -30,4 +30,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment-id: ${{ github.event.comment.id }}
-          body: ${{ steps.cli.outputs.comment }}
+          body: |
+            "${{ steps.cli.outputs.comment }}"
