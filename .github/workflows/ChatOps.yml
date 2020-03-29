@@ -1,0 +1,25 @@
+name: ChatOps
+on: [issue_comment]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Listen for PR Comments
+        uses: machine-learning-apps/actions-chatops@master
+        with:
+          TRIGGER_PHRASE: "/distribute"
+        env: # you must supply GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: prcomm
+      
+      - name: Checking Out
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        uses: actions/checkout@v2
+        
+      - name: Distribute to App Center
+        uses: ahdbilal/AppCenter-Github-Action@v1.0.3
+        with:
+          command: appcenter distribute ${{ steps.prcomm.outputs.TRAILING_LINE }}
+          token: ${{secrets.APP_CENTER_TOKEN}}
+        
