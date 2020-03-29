@@ -2,11 +2,26 @@
   build: 125
   release_nottes:
   destinations: privateA
-  mandatory_update: False
-  notify_testers: True
+  mandatory_update: false
+  notify_testers: true
+  type: alpha
+  prerelease: true
+  draft: true
 - branch: feature
   build: 125
   release_nottes:
   destinations: public
-  mandatory_update: False
+  mandatory_update: false
   notify_testers: True
+  type: alpha
+  prerelease: true
+  draft: true
+- branch: pull
+  build: 125
+  release_nottes:
+  destinations: public
+  mandatory_update: false
+  notify_testers: true
+  type: alpha
+  prerelease: true
+  draft: true
