@@ -6,7 +6,7 @@
   notify_testers: true
   type: alpha
   prerelease: true
-  draft: true
+  draft: false
 - branch: feature
   build: 125
   release_nottes:
@@ -15,7 +15,7 @@
   notify_testers: True
   type: alpha
   prerelease: true
-  draft: true
+  draft: false
 - branch: pull
   build: 125
   release_nottes:
@@ -24,5 +24,5 @@
   notify_testers: true
   type: alpha
   prerelease: true
-  draft: true
+  draft: false
 
