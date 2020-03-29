@@ -7,6 +7,6 @@
 - branch: feature
   build: 125
   release_nottes:
-  destinations: privateA, public, privateB
+  destinations: public
   mandatory_update: False
   notify_testers: True
