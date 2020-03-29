@@ -34,7 +34,7 @@ jobs:
       uses: actions/setup-python@v1.2.0
     - run: |
         pip install PyYAML
-        destinations=$(echo  $GITHUB_REF | python3 read_dist_config.py "destinations")
+        destinations=$(echo  $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
         echo $destinations
     
     - name: Run a one-line script
