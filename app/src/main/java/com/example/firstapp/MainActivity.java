@@ -4,9 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-//import com.microsoft.appcenter.AppCenter;
-//import com.microsoft.appcenter.distribute.Distribute;
-
 
 public class MainActivity extends AppCompatActivity {
 
