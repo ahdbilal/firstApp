@@ -109,5 +109,5 @@ jobs:
             
             ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ steps.release-details.outputs.link }})
             
-            [1]: "${{ steps.release-details.outputs.link }}"
+            [1]: ${{ steps.release-details.outputs.link }}
     
