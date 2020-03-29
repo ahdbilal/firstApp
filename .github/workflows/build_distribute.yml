@@ -11,7 +11,7 @@ jobs:
 
     steps:
     
-    - name: Checkout repo
+    - name: Checkout
       uses: actions/checkout@v2
     
     - name: Set up JDK 1.8
@@ -22,7 +22,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     
-    - name: Sign Android release
+    - name: Sign Android Release
       uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: app/build/outputs/apk/release
@@ -31,7 +31,7 @@ jobs:
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
     
-    - name: Upload artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: build
@@ -40,21 +40,17 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v1.2.0
     
-    - name: Read dist config
+    - name: Read Configuration
       id: dist_config
       run: |
         pip install PyYAML
-        echo $GITHUB_REF
         destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
         notify_testers=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "notify_testers")
         echo "::set-output name=destinations::"${destinations//\'}""
         echo "::set-output name=notify_testers::"${notify_testers//\'}""
     
-    - name: Distribute to App Center
+    - name: Distribute with App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk \
-          --silent ${{ steps.dist_config.outputs.notify_testers }} \
-          -a ${{ secrets.APP_NAME }} \
-          -g ${{ steps.dist_config.outputs.destinations }}
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk --silent ${{ steps.dist_config.outputs.notify_testers }} -a ${{ secrets.APP_NAME }} -g ${{ steps.dist_config.outputs.destinations }}
         token: ${{secrets.APP_CENTER_TOKEN}}
