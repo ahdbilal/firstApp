@@ -1,4 +1,4 @@
-name: Android CI
+name: build_distribute_on_PR
 
 on: 
   pull_request:
