@@ -35,7 +35,7 @@ jobs:
     - run: |
         pip install PyYAML
         destinations=$(echo  $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
-        echo $destinations
+        echo "::set-output name=destinations::$destinations"
     
     - name: Run a one-line script
       run: echo "${{ steps.python_script.outputs.destinations }}"
