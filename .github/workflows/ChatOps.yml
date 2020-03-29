@@ -27,9 +27,6 @@ jobs:
           comment=$(cat comment1.txt)
           echo $comment
           echo "::set-output name=comment::$comment"
-          
-      - run: |
-          echo ${{ steps.cli.outputs.comment }}
         
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.1.0
