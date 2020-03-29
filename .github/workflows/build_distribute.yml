@@ -51,5 +51,5 @@ jobs:
     - name: Distribute to App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ahbilal-microsoft.com/firstApp -g ${{ steps.dist_config.outputs.destinations }}
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ${{ secrets.APP_NAME }} -g ${{ steps.dist_config.outputs.destinations }}
         token: ${{secrets.APP_CENTER_TOKEN}}
