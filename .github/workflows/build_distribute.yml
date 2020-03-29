@@ -46,10 +46,15 @@ jobs:
         pip install PyYAML
         echo $GITHUB_REF
         destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
+        notify_testers=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "notify_testers")
         echo "::set-output name=destinations::"${destinations//\'}""
+        echo "::set-output name=notify_testers::"${notify_testers//\'}""
     
     - name: Distribute to App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
       with:
-        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk -a ${{ secrets.APP_NAME }} -g ${{ steps.dist_config.outputs.destinations }}
+        command: appcenter distribute release -f app/build/outputs/apk/release/app-release-unsigned-signed.apk \
+          --silent ${{ steps.dist_config.outputs.notify_testers }} \
+          -a ${{ secrets.APP_NAME }} \
+          -g ${{ steps.dist_config.outputs.destinations }}
         token: ${{secrets.APP_CENTER_TOKEN}}
