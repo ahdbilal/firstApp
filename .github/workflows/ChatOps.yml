@@ -23,6 +23,7 @@ jobs:
           npm install appcenter-cli@2.3.3
           npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }} >> comment.txt
           comment=$(cat comment.txt)
+          echo $comment
           echo "::set-output name=comment::$comment"
           
       - run: |
@@ -31,9 +32,9 @@ jobs:
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.1.0
         env:
-          comment1: cat comment.txt
+          comment1: $(cat comment.txt)
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment-id: ${{ github.event.comment.id }}
           body: |
-            "${{ steps.cli.outputs.comment1 }}"
+            ${{ steps.cli.outputs.comment1 }}
