@@ -49,11 +49,14 @@ jobs:
         prerelease=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "prerelease")
         release_type=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "release_type")
         draft=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "draft")
+        prerelease=$(echo $prerelease | tr '[:upper:]' '[:lower:]') 
+        draft=$(echo $draft | tr '[:upper:]' '[:lower:]') 
         echo "::set-output name=destinations::"${destinations//\'}""
         echo "::set-output name=notify_testers::"${notify_testers//\'}""
         echo "::set-output name=prerelease::"${prerelease//\'}""
         echo "::set-output name=release_type::"${release_type//\'}""
         echo "::set-output name=draft::"${draft//\'}""
+        
         echo $prerelease
         echo $release_type
         echo $draft
@@ -90,8 +93,8 @@ jobs:
           tag_name: v${{ steps.release-details.outputs.version }}.${{ steps.dist_config.outputs.release_type }}-${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.release-details.outputs.app_name }} v${{ steps.release-details.outputs.version }}
           body: ${{ env.COMMIT_MESSAGE }}
-          draft: true
-          prerelease: true
+          draft: ${{ steps.dist_config.outputs.draft }}
+          prerelease: ${{ steps.dist_config.outputs.prerelease }}
     
     - name: Zip Build
       run: zip -r build.zip build
