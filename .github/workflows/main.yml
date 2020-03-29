@@ -30,17 +30,15 @@ jobs:
         echo test, and deploy your project.
     
     - name: Setup Python
-      id: asd
+      id: python_script
       uses: actions/setup-python@v1.2.0
     - run: |
         pip install PyYAML
-        echo $GITHUB_REF
-        ls
-        group=$(echo "master" | python3 .github/workflows/lib/read_dist_config.py)
-        echo $group
+        destinations=$(echo  $GITHUB_REF | python3 dist_config_read.py "destinations")
+        echo $destinations
     
     - name: Run a one-line script
-      run: echo "${{ steps.asd.outputs.id }}"
+      run: echo "${{ steps.python_script.outputs.destinations }}"
         
         
         
