@@ -31,7 +31,7 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: |
             <br />
-            <details><summary>CLICK ME</summary>
+            <details><summary>Output</summary>
             <p>
             ${{ steps.cli.outputs.comment }}
             </p>
