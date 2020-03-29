@@ -32,7 +32,7 @@ jobs:
           body: |
             <br />
             **App Center:**
-            ```json
+            ```yaml
             ${{ steps.cli.outputs.comment }}
             ```
             
