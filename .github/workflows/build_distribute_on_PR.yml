@@ -46,8 +46,17 @@ jobs:
         pip install PyYAML
         destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
         notify_testers=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "notify_testers")
+        prerelease=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "prerelease")
+        release_type=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "release_type")
+        draft=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "draft")
         echo "::set-output name=destinations::"${destinations//\'}""
         echo "::set-output name=notify_testers::"${notify_testers//\'}""
+        echo "::set-output name=destinations::"${prerelease//\'}""
+        echo "::set-output name=notify_testers::"${release_type//\'}""
+        echo "::set-output name=notify_testers::"${draft//\'}""
+        echo $prerelease
+        echo $release_type
+        echo $draft
     
     - name: Distribute with App Center
       uses: ahdbilal/AppCenter-Github-Action@v1.0.3
@@ -58,7 +67,6 @@ jobs:
     - name: Get Release Details
       id: release-details
       run: |
-        echo ${{ steps.dist_config.outputs.destinations }}
         temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "X-API-Token: ${{secrets.APP_CENTER_TOKEN}}")
         echo $temp
         id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
@@ -77,13 +85,13 @@ jobs:
       id: create-release
       uses: actions/create-release@v1
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: v${{ steps.release-details.outputs.version }}.${{ steps.dist_config.outputs.release_type }}-${{ secrets.GITHUB_TOKEN }} 
       with:
           tag_name: ${{ steps.release-details.outputs.id }}
           release_name: ${{ steps.release-details.outputs.app_name }} v${{ steps.release-details.outputs.version }}
           body: ${{ env.COMMIT_MESSAGE }}
-          #draft: # optional
-          #prerelease: # optional
+          draft: ${{ steps.dist_config.outputs.draft }}
+          prerelease: ${{ steps.dist_config.outputs.prerelease }}
     
     - name: Zip Build
       run: zip -r build.zip build
