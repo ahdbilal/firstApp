@@ -46,8 +46,7 @@ jobs:
         pip install PyYAML
         echo $GITHUB_REF
         destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
-        echo "::set-output name=destinations::$destinations"
-        echo "::set-output name=destinations::privateA"
+        echo "::set-output name=destinations::${destinations//\'}""
         echo $destinations
     
     - name: app center distribute
