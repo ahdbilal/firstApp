@@ -21,10 +21,8 @@ jobs:
         id: cli
         run: |
           npm install appcenter-cli
-          npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }} >> comment.txt
-          tr -s ' ' ' ' <comment.txt> comment1.txt
-          tr -s '\n' '\t\t' <comment.txt> comment1.txt
-          comment=$(cat comment1.txt)
+          npx appcenter distribute  ${{ steps.prcomm.outputs.TRAILING_LINE }} --token "${{secrets.APP_CENTER_TOKEN}}" -a ${{ secrets.APP_NAME }} --output json >> comment.txt
+          comment=$(cat comment.txt)
           echo $comment
           echo "::set-output name=comment::$comment"
         
