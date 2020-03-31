@@ -22,21 +22,6 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     
-    - run: |
-        ls
-        echo "app"
-        cd app
-        ls
-        echo "app/build"
-        cd app/build
-        ls
-        echo "app/build/outputs"
-        cd app/build/outputs
-        ls
-        echo "app/build/outputs/apk"
-        cd app/build/outputs/apk
-        ls
-    
     - name: Sign Android Release
       uses: r0adkll/sign-android-release@v1
       with:
