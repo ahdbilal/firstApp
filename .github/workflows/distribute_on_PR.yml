@@ -1,0 +1,126 @@
+name: distribute_app
+
+on: [issue_comment]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Listen for PR Comments
+      uses: machine-learning-apps/actions-chatops@master
+      with:
+        TRIGGER_PHRASE: "/deploy-build"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: prcomm
+
+    - name: Checkout
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      uses: actions/setup-python@v1.2.0
+      
+    - name: Download a Build Artifact from Azure Blob Storage
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      uses: fixpoint/azblob-download-artifact@v3
+      with:
+        connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}      
+        name: build
+        path: build
+    
+    - name: Read Configuration
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      id: dist_config
+      run: |
+        pip install PyYAML
+        destinations=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "destinations")
+        notify_testers=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "notify_testers")
+        prerelease=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "prerelease")
+        release_type=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "release_type")
+        draft=$(echo $GITHUB_REF | python3 .github/workflows/lib/read_dist_config.py "draft")
+        prerelease=$(echo $prerelease | tr '[:upper:]' '[:lower:]') 
+        draft=$(echo $draft | tr '[:upper:]' '[:lower:]') 
+        echo "::set-output name=destinations::"${destinations//\'}""
+        echo "::set-output name=notify_testers::"${notify_testers//\'}""
+        echo "::set-output name=prerelease::"${prerelease//\'}""
+        echo "::set-output name=release_type::"${release_type//\'}""
+        echo "::set-output name=draft::"${draft//\'}""
+    
+    - name: Distribute with App Center
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      uses: ahdbilal/AppCenter-Github-Action@v1.0.3
+      with:
+        command: appcenter distribute release -f build/release/app-release-unsigned-signed.apk -a ${{ secrets.APP_NAME }} -g ${{ steps.dist_config.outputs.destinations }} -R build/release_notes.txt
+        token: ${{secrets.APP_CENTER_TOKEN}}
+    
+    - name: Get Release Details
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      id: release-details
+      run: |
+        temp=$(curl -X GET "https://api.appcenter.ms/v0.1/apps/${{ secrets.APP_NAME }}/distribution_groups/${{ steps.dist_config.outputs.destinations }}/releases/latest" -H "accept: application/json" -H "X-API-Token: ${{secrets.APP_CENTER_TOKEN}}")
+        echo $temp
+        id=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
+        app_name=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['app_name'])")
+        version=$(echo $temp | python3 -c "import sys, json; print(json.load(sys.stdin)['short_version'])")
+        echo "::set-output name=id::$id"
+        echo "::set-output name=app_name::$app_name"
+        echo "::set-output name=version::$version"
+        org=$(echo ${{ secrets.APP_NAME }} | python -c 'import sys;print(sys.stdin.read().splitlines()[0].split("/")[0])')
+        app=$(echo ${{ secrets.APP_NAME }} | python -c 'import sys;print(sys.stdin.read().splitlines()[0].split("/")[1])')
+        echo "::set-output name=link::https://install.appcenter.ms/users/$org/apps/$app/releases/$id"
+        pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        echo "::set-output name=pull_number::$pull_number"
+        echo $id
+    
+    - name: Create a Release
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      id: create-release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: v${{ steps.release-details.outputs.version }}-${{ steps.dist_config.outputs.release_type }}.${{ steps.release-details.outputs.id }}
+          release_name: ${{ steps.release-details.outputs.app_name }} v${{ steps.release-details.outputs.version }}
+          body: ${{ env.COMMIT_MESSAGE }}
+          draft: ${{ steps.dist_config.outputs.draft }}
+          prerelease: ${{ steps.dist_config.outputs.prerelease }}
+    
+    - name: Zip Build
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      run: zip -r build.zip build
+    
+    - name: Upload Release Asset
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: build.zip
+        asset_name: build
+        asset_content_type: application/zip
+    
+    - name: Create comment
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}
+          body: |
+            Scan the code with your device camera, or visit this [install page][1] on your device browser:
+            
+            ![alt text](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${{ steps.release-details.outputs.link }})
+            
+            [1]: ${{ steps.release-details.outputs.link }}
+   
+    - name: Add Label
+      if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      run: |
+        curl -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' -d '{"labels": [ "release-created","${{ steps.dist_config.outputs.release_type }}" ]}' https://api.github.com/repos/$GITHUB_REPOSITORY/issues/${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}/labels
+      
+    
+      
